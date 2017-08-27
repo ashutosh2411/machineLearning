@@ -19,4 +19,5 @@ def RidgeRegression(X, Y, L):
 	return (matmul(numpy.linalg.inv(matmul(X_,X) + L*np.eye(X_.shape[0])), matmul(X_,Y)))
 
 print (LeastSquare(Featurematrix,y))
+
 print (RidgeRegression(Featurematrix, y, .1))
