@@ -18,3 +18,5 @@ for x in content:
 			fout.write (dict[words[4]]+' '+str(i+1)+':'+words[i]+' ')
 		i = i+1
 	fout.write('\n')
+f.close()
+fout.close()
