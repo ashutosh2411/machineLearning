@@ -3,5 +3,7 @@ Assignments as part of Machine Learning Course @ IIT Palakkad
 
 Assignment 1: Regression
   - Ordinary Least Square
-  - Stochastic Gradient Descent
+  - Ridge Regression using
+	  - Gradient Descent
+	  - Stochastic Gradient Descent
   - K fold cross validation
