@@ -5,5 +5,5 @@ Assignment 1: Regression
   - Ordinary Least Square
   - Ridge Regression using
 	  - Gradient Descent
-	  - Stochastic Gradient
+	  - Stochastic Gradient Descent
   - K fold cross validation
