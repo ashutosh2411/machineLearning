@@ -1,9 +1,14 @@
+"""
+	Finding optimal value od lamda using K Fold cross validation technique
+"""
+
 # -*- coding: utf-8 -*-
 import numpy as np
 from numpy import genfromtxt, matmul
 from numpy import *
 import numpy.matlib
 from numpy.linalg import norm, inv
+#import numpy.arrange
 import matplotlib.pyplot as plt
 
 x_ = genfromtxt('Regressiondata/x.txt', delimiter=',')[np.newaxis]

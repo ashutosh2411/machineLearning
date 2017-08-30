@@ -1,3 +1,8 @@
+"""
+	Implementing Ordinary Least Square, Ridge Regression, Ridge 
+	Regression with gradient descent and stochastic gradient descent
+"""
+
 import numpy as np
 from numpy import genfromtxt, matmul
 from numpy.linalg import norm, inv
