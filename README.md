@@ -7,3 +7,10 @@ Assignment 1: Regression
 	  - Gradient Descent
 	  - Stochastic Gradient Descent
   - K fold cross validation
+
+Assignment 2: Multiclass Classification
+  - SVM
+  	- One vs One Scheme 
+  	- One vs Rest Scheme
+
+Assignment 3: Coming soon
