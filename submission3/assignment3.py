@@ -1,8 +1,8 @@
 import random
 import pandas
-
+from numpy import *
 from sklearn.linear_model import LogisticRegression
-from sklearn.decomposition import PCA, KernelPCA
+from sklearn.decomposition import PCA
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.neighbors import KNeighborsClassifier
@@ -14,7 +14,8 @@ from mpl_toolkits.mplot3d import Axes3D
 from sklearn.cluster import KMeans, SpectralClustering, DBSCAN
 from sklearn.mixture import GaussianMixture
 from matplotlib import pyplot
-from numpy import *
+
+N_ = 500						# Number of samples on a sphere
 
 def accuracy (Y, l):
 	acc = 0
@@ -38,83 +39,9 @@ def shell (n, r_in, r_out, l):
 		l_ = l_ + [l]
 	return vstack((x, y, z, l_))
 
-def plot3(array, label):
-	fig = pyplot.figure()
-	ax = Axes3D(fig)
-	t = [[],[],[]]
-	for i in range(array.shape[0]):
-		if label[i] == 0:
-			t[0] = t[0] + [i]
-		elif label[i] == 1:
-			t[1] = t[1] + [i]
-		elif label[i] == 2:
-			t[2] = t[2] + [i]
-	a = [0,0,0]
-	for i in t[0]:
-		a = vstack((a,array[i]))
-	a = a[1:]
-	ax.scatter(a[:,0],a[:,1],a[:,2],color = 'red')	
-	a = [0,0,0]
-	for i in t[1]:
-		a = vstack((a,array[i]))
-	a = a[1:]
-	ax.scatter(a[:,0],a[:,1],a[:,2],color = 'green')	
-	a = [0,0,0]
-	for i in t[2]:
-		a = vstack((a,array[i]))
-	a = a[1:]
-	ax.scatter(a[:,0],a[:,1],a[:,2],color = 'blue')	
-	ax.set_xlabel('X axis')
-	ax.set_ylabel('Y axis')
-	ax.set_zlabel('Z axis')
-	pyplot.show()
-
 def split(array, size):
 	sh = int(array.shape[0]*size)
 	return (array[:sh], array[sh:])
-
-def LR(X_train, Y_train, X_test, Y_test):
-	lr = LogisticRegression()
-	lr.fit(X_train, Y_train)
-	predictions = lr.predict (X_test)
-	print 'LR : ' + str(accuracy(Y_test, predictions))
-
-def LDA(X_train, Y_train, X_test, Y_test):
-	lda = LinearDiscriminantAnalysis()
-	lda.fit(X_train, Y_train)
-	predictions = lda.predict (X_test)
-	print 'LDA: ' +str(accuracy(Y_test, predictions))
-
-def RF(X_train, Y_train, X_test, Y_test):
-	rf = RandomForestClassifier(max_depth=10, random_state=0)
-	rf.fit(X_train, Y_train)
-	predictions = rf.predict (X_test)
-	print 'RF : '+str(accuracy(Y_test, predictions))
-
-def KNN(X_train, Y_train, X_test, Y_test):
-	knn = KNeighborsClassifier()
-	knn.fit(X_train, Y_train)
-	predictions = knn.predict (X_test)
-	print 'KNN: '+str(accuracy(Y_test, predictions))
-
-def DT(X_train, Y_train, X_test, Y_test):
-	rf = DecisionTreeClassifier()
-	rf.fit(X_train, Y_train)
-	predictions = rf.predict (X_test)
-	print 'RF : ' +str(accuracy(Y_test, predictions))
-
-def NB(X_train, Y_train, X_test, Y_test):
-	nb = GaussianNB()
-	nb.fit(X_train, Y_train)
-	predictions = nb.predict (X_test)
-	print 'NB : '+str(accuracy(Y_test, predictions))	
-
-def SVM(X_train, Y_train, X_test, Y_test):
-	svm = SVC()
-	svm.fit(X_train, Y_train)
-	predictions = svm.predict (X_test)
-	print 'SVM: '+str(accuracy(Y_test, predictions))	
-	#print '--------------------'
 
 def classifier():
 	print "Breast Cancer Results"
@@ -129,57 +56,100 @@ def classifier():
 	(X_train, X_test) = split(X, .6)
 	(Y_train, Y_test) = split(Y, .6)
 	
-	LR(X_train, Y_train, X_test, Y_test)
-	LDA(X_train, Y_train, X_test, Y_test)
-	KNN(X_train, Y_train, X_test, Y_test)
-	RF(X_train, Y_train, X_test, Y_test)
-	NB(X_train, Y_train, X_test, Y_test)
-	SVM(X_train, Y_train, X_test, Y_test)
+	print 'LR : '+str(accuracy(Y_test, LogisticRegression().fit(X_train, Y_train).predict (X_test)))
+	print 'LDA: '+str(accuracy(Y_test, LinearDiscriminantAnalysis().fit(X_train, Y_train).predict (X_test)))
+	print 'RF : '+str(accuracy(Y_test, RandomForestClassifier(max_depth=100).fit(X_train, Y_train).predict (X_test)))
+	print 'KNN: '+str(accuracy(Y_test, KNeighborsClassifier().fit(X_train, Y_train).predict (X_test)))
+	print 'DT : '+str(accuracy(Y_test, DecisionTreeClassifier().fit(X_train, Y_train).predict (X_test)))
+	print 'NB : '+str(accuracy(Y_test, GaussianNB().fit(X_train, Y_train).predict (X_test)))	
+	print 'SVM: '+str(accuracy(Y_test, SVC().fit(X_train, Y_train).predict (X_test)))	
 	print '---------------------'
 
-def cluster ():
+def plot(dim,array, label, title,t):
+	if dim == 3:
+		fig = pyplot.figure(t+title)
+		ax = Axes3D(fig)
+		col1 = label == 0
+		col2 = label == 1
+		col3 = label == 2
+		ax.scatter(array[col1,0],array[col1,1],array[col1,2])
+		ax.scatter(array[col2,0],array[col2,1],array[col2,2])
+		ax.scatter(array[col3,0],array[col3,1],array[col3,2])
+		ax.set_xlabel('X axis')
+		ax.set_ylabel('Y axis')
+		ax.set_zlabel('Z axis')
+		ax.set_title(title)
+		fig.savefig(t+title+'.png')
+		pyplot.show()
+	elif dim == 2:
+		fig = pyplot.figure(t+title)
+		col1 = label == 0
+		col2 = label == 1
+		col3 = label == 2
+		pyplot.scatter(array[col1,0],array[col1,1])
+		pyplot.scatter(array[col2,0],array[col2,1])
+		pyplot.scatter(array[col3,0],array[col3,1])
+		fig.savefig(t+title+'.png')
+		pyplot.show()	
+	elif dim == 1:
+		fig = pyplot.figure(t+title)
+		col1 = label == 0
+		col2 = label == 1
+		col3 = label == 2
+		pyplot.scatter(array,label)
+		fig.savefig(t+title+'.png')
+		pyplot.show()
+
+def cluster3d (X,t):
+	print "clustering with 3 features"
+	plot(3,X,KMeans(n_clusters = 3).fit_predict(X), 'KMeans',t)
+	plot(3,X,SpectralClustering(n_clusters=3, affinity="nearest_neighbors").fit(X).labels_, 'SpectralClustering',t)
+	plot(3,X,GaussianMixture(n_components=3, covariance_type='full').fit(X).predict(X),'GMM',t)
+	plot(3,X,DBSCAN(eps='7').fit_predict(X),'DBSCAN',t)
+	print "---------------------"
+
+def cluster1d (X,e,t):
+	print "clustering with 1 features"
+	plot(1,X,KMeans(n_clusters = 3).fit_predict(X),'KMeans',t)
+	plot(1,X,SpectralClustering(n_clusters = 3,affinity='nearest_neighbors').fit(X).labels_,'SpectralClustering',t)
+	plot(1,X,GaussianMixture(n_components = 3).fit(X).predict(X),'GaussianMixture',t)
+	plot(1,X,DBSCAN(eps=e).fit_predict(X),'DBSCAN',t)
+	print "---------------------"
+
+def cluster2d (X,e,t):
+	print "clustering with 2 features"
+	plot(2,X,KMeans(n_clusters = 3).fit_predict(X),'KMeans',t)
+	plot(2,X,SpectralClustering(n_clusters = 3,affinity='nearest_neighbors').fit(X).labels_,'SpectralClustering',t)
+	plot(2,X,GaussianMixture(n_components = 3).fit(X).predict(X),'GaussianMixture',t)
+	plot(2,X,DBSCAN(eps=e).fit_predict(X),'DBSCAN',t)
+	print "---------------------"
+
+def kernel(x):
+	return (matmul(x,x.T)+1)**2/1000
+
+def sphere():
 	print "Sphere"
-	print "--------------------"
-	M1 = shell(500, 9.5, 10.5, 0)
-	M2 = shell(500, 19.5, 20.5, 1)
-	M3 = shell(500, 29.5, 30.5, 2)
+	M1 = shell(N_, 9.5, 10.5, 0)
+	M2 = shell(N_, 19.5, 20.5, 1)
+	M3 = shell(N_, 29.5, 30.5, 2)
 
 	X_ = hstack((M1,M2,M3))
 	X = X_[:-1].T
 	Y = X_[-1]
-	#plot3(X, Y)
-
-	km = KMeans(n_clusters = 3)
-	l = km.fit_predict(X)
-	#plot3 (X,l)
-	print 'KMeans  :'+str(accuracy (Y, l))
-
-	sc = SpectralClustering(n_clusters=3, affinity="nearest_neighbors").fit(X)
-	l = sc.labels_
-	#plot3 (X,l)
-	print 'Spectral:'+str(accuracy (Y, l))
-
-	gm = GaussianMixture(n_components=3, covariance_type='full').fit(X)
-	l = gm.predict(X)
-	#plot3 (X,l)
-	print 'GMM     :'+str(accuracy (Y, l))
-
-	db = DBSCAN(eps='7')
-	l = db.fit_predict(X)
-	#plot3 (X,l)
-	print 'DBSCAN  :'+str(accuracy (Y, l))
-	print "--------------------"
-
-	kpca = KernelPCA(n_components='1',kernel = 'rbf')
-	kpca.fit(X)
-	print kpca.lambdas_
-#	print kpca.singular_values_
-
-	pca = PCA(n_components=1)
-	pca.fit(X)
-	print len(pca.explained_variance_ratio_)
-	print pca.singular_values_
-
+	plot(3,X, Y, 'Data','full')
+	cluster3d(X,'full')
+	kpca = PCA(n_components=1).fit_transform((kernel(X)))
+	plot(1,kpca,Y,'Data','KPCA_2D_')
+	cluster1d(kpca,50,'kPCA_1D_')
+	pca = PCA(n_components=1).fit_transform(X)
+	plot(1,pca,Y,'Data','PCA')
+	cluster1d(pca,.5,'PCA_1D_')
+	kpca = PCA(n_components=2).fit_transform((kernel(X)))
+	plot(2,kpca,Y,'Data','KPCA_2D_')
+	cluster2d(kpca,500,'KPCA_2D_')
+	pca = PCA(n_components=2).fit_transform(X)
+	plot(2,pca,Y,'Data','PCA_2D_')
+	cluster2d(pca,3,'PCA_2D_')
 
 classifier()
-cluster()
+sphere()
